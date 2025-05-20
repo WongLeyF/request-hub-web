@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  # Web Frontend
+  request-hub-web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: request-hub-web
+    ports:
+      - "80:80"
