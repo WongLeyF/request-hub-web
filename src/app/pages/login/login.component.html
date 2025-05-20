@@ -1,0 +1,36 @@
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card shadow col-md-5 col-lg-4 col-xl-3">
+    <div class="card-body p-4">
+      <h2 class="text-center mb-4">Iniciar sesión</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Usuario</mat-label>
+            <input matInput formControlName="username" placeholder="Ingresa tu usuario" type="username">
+            <mat-error *ngIf="usernameControl?.errors?.['required']">Usuario es obligatorio</mat-error>
+            <mat-error *ngIf="usernameControl?.errors?.['username']">Por favor ingresa un username válido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Contraseña</mat-label>
+            <input matInput formControlName="password" placeholder="Ingresa tu contraseña" [type]="hidePassword ? 'password' : 'text'">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="passwordControl?.errors?.['required']">Contraseña es obligatoria</mat-error>
+            <mat-error *ngIf="passwordControl?.errors?.['minlength']">La contraseña debe tener al menos 8 caracteres</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="w-100 py-2">
+            Iniciar sesión
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

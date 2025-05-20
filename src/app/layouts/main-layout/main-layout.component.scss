@@ -1,0 +1,38 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+  font-weight: 500;
+  margin-left: 12px;
+  letter-spacing: 0.5px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.sidenav-container {
+  flex: 1;
+}
+
+.sidenav {
+  width: 260px;
+  border-right: none;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.main-content {
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 64px); // Altura total menos la toolbar
+}

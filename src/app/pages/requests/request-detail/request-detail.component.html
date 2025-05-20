@@ -1,0 +1,224 @@
+<div class="content-wrapper">
+  <div *ngIf="loading" class="loading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <p class="text-center mt-3">Cargando detalles de la solicitud...</p>
+  </div>
+
+  <div *ngIf="!loading && request" class="request-details">
+    <!-- Cabecera con información general -->
+    <div class="d-flex align-items-center mb-4">
+      <button mat-icon-button color="primary" [routerLink]="['/requests']" matTooltip="Volver a la lista">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="mb-0 ms-2">Solicitud #{{request.id}}</h1>
+      <span class="spacer"></span>
+      <div class="status-chip" [ngClass]="getStatusClass()">
+        {{getStatusLabel()}}
+      </div>
+    </div>
+
+    <!-- Información principal de la solicitud -->
+    <div class="row">
+      <div class="col-lg-8">
+        <mat-card class="mb-4">
+          <mat-card-header class="d-flex align-items-center">
+            <div class="custom-card-header d-flex align-items-center justify-content-between px-0 pt-4 w-100">
+              <h2 class="mb-0">{{request.subject}}</h2>
+              <mat-chip>{{getRequestTypeLabel()}}</mat-chip>
+            </div>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="request-progress mb-4">
+              <p class="text-muted mb-1">Estado de la solicitud</p>
+              <mat-progress-bar [value]="getProgressValue()"
+                [color]="request.status === 'rejected' ? 'warn' : 'primary'"></mat-progress-bar>
+            </div>
+
+            <mat-divider class="mb-3"></mat-divider>
+
+            <h3>Descripción</h3>
+            <p class="request-description">{{request.description}}</p>
+
+            <div *ngIf="request.attachments && request.attachments.length > 0">
+              <h3>Archivos adjuntos</h3>
+              <div class="attachment-list">
+                <div *ngFor="let attachment of request.attachments" class="attachment-item">
+                  <mat-icon>attachment</mat-icon>
+                  <span>{{attachment.name}}</span>
+                  <button mat-icon-button color="primary" matTooltip="Descargar archivo">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="request.dueDate">
+              <mat-divider class="my-3"></mat-divider>
+              <div class="alert" [ngClass]="{'alert-warning': true}">
+                <mat-icon>schedule</mat-icon>
+                <span>Fecha límite: <strong>{{request.dueDate | date:'dd/MM/yyyy'}}</strong></span>
+              </div>
+            </ng-container>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Historial de aprobaciones -->
+        <mat-card class="mb-4">
+          <mat-card-header>
+            <mat-card-title>Historial de aprobaciones</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="timeline">
+              <div *ngFor="let approval of request.approvalHistory" class="timeline-item"
+                [ngClass]="{'approved': approval.status === 'approved', 'rejected': approval.status === 'rejected', 'returned': approval.status === 'returned'}">
+                <div class="timeline-icon">
+                  <mat-icon>{{approval.status === 'approved' ? 'check_circle' :
+                    approval.status === 'rejected' ? 'cancel' :
+                    approval.status === 'returned' ? 'replay' : 'pending'}}</mat-icon>
+                </div>
+                <div class="timeline-content">
+                  <div class="d-flex align-items-center mb-1">
+                    <span class="approver-name">{{approval.approverName}}</span>
+                    <span class="approver-role text-muted ms-2">{{approval.approverRole}}</span>
+                    <span class="spacer"></span>
+                    <span class="approval-date text-muted">{{approval.date | date:'dd/MM/yyyy HH:mm'}}</span>
+                  </div>
+                  <div class="approval-status">
+                    <span [ngClass]="{'text-success': approval.status === 'approved',
+                                     'text-danger': approval.status === 'rejected',
+                                     'text-warning': approval.status === 'returned'}">
+                      {{approval.status === 'approved' ? 'Aprobó la solicitud' :
+                      approval.status === 'rejected' ? 'Rechazó la solicitud' :
+                      approval.status === 'returned' ? 'Devolvió la solicitud' : 'Pendiente'}}
+                    </span>
+                  </div>
+                  <p *ngIf="approval.comments" class="approval-comments mt-2">
+                    "{{approval.comments}}"
+                  </p>
+                </div>
+              </div>
+
+              <div *ngIf="request.approvalHistory.length === 0" class="empty-timeline">
+                <mat-icon>history</mat-icon>
+                <p>No hay historial de aprobaciones</p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Comentarios -->
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Comentarios</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="comments-section">
+              <div *ngFor="let comment of request.comments" class="comment-item">
+                <div class="comment-avatar"
+                  [style.backgroundImage]="'url(' + (comment.avatarUrl || 'assets/images/default-avatar.png') + ')'">
+                </div>
+                <div class="comment-content">
+                  <div class="comment-header">
+                    <span class="comment-author">{{comment.userName}}</span>
+                    <span class="comment-role text-muted ms-2">{{comment.userRole}}</span>
+                    <span class="spacer"></span>
+                    <span class="comment-date text-muted">{{comment.date | date:'dd/MM/yyyy HH:mm'}}</span>
+                  </div>
+                  <p class="comment-text">{{comment.text}}</p>
+                </div>
+              </div>
+
+              <div *ngIf="request.comments.length === 0" class="empty-comments">
+                <mat-icon>chat</mat-icon>
+                <p>No hay comentarios en esta solicitud</p>
+              </div>
+
+              <!-- Formulario para nuevo comentario -->
+              <mat-divider class="my-3"></mat-divider>
+              <form [formGroup]="commentForm" (ngSubmit)="submitComment()" class="comment-form">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Añadir un comentario</mat-label>
+                  <textarea matInput formControlName="comment" rows="3"
+                    placeholder="Escribe tu comentario aquí"></textarea>
+                  <mat-error *ngIf="commentForm.get('comment')?.hasError('required')">
+                    El comentario es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="commentForm.get('comment')?.hasError('minlength')">
+                    El comentario debe tener al menos 3 caracteres
+                  </mat-error>
+                </mat-form-field>
+                <div class="text-end">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="commentForm.invalid">
+                    <mat-icon>send</mat-icon> Enviar comentario
+                  </button>
+                </div>
+              </form>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- Información del solicitante -->
+        <mat-card class="mb-4">
+          <mat-card-header>
+            <mat-card-title>Información del solicitante</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="creator-info">
+              <div class="creator-avatar"
+                [style.backgroundImage]="'url(' + (request.creatorAvatar || 'assets/images/default-avatar.png') + ')'">
+              </div>
+              <h3>{{request.creator}}</h3>
+              <p *ngIf="request.creatorDepartment" class="text-muted">{{request.creatorDepartment}}</p>
+
+              <div class="creator-details mt-3">
+                <div class="detail-item">
+                  <mat-icon>event</mat-icon>
+                  <span>Creado: {{request.createdAt | date:'dd/MM/yyyy HH:mm'}}</span>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Botones de acción -->
+        <mat-card *ngIf="canApprove && request.status === 'pending'" class="action-card">
+          <mat-card-header>
+            <mat-card-title>Acciones disponibles</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="action-buttons">
+              <button mat-raised-button color="primary" (click)="approveRequest()" class="w-100 mb-2">
+                <mat-icon>check_circle</mat-icon> Aprobar solicitud
+              </button>
+
+              <button mat-stroked-button color="warn" (click)="rejectRequest()" class="w-100 mb-2">
+                <mat-icon>cancel</mat-icon> Rechazar solicitud
+              </button>
+
+              <button mat-stroked-button color="accent" (click)="returnRequest()" class="w-100">
+                <mat-icon>replay</mat-icon> Devolver para correcciones
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje de error si la solicitud no existe -->
+  <div *ngIf="!loading && !request" class="error-container text-center py-5">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h2>Solicitud no encontrada</h2>
+    <p>No se pudo encontrar la solicitud con el ID especificado.</p>
+    <button mat-raised-button color="primary" [routerLink]="['/requests']">
+      <mat-icon>list</mat-icon> Volver a la lista de solicitudes
+    </button>
+  </div>
+</div>

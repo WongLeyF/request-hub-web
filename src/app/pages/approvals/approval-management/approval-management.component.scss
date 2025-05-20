@@ -1,0 +1,278 @@
+.content-wrapper {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+// Estilos para el filtro
+.filters-form {
+  padding: 8px 0;
+}
+
+// Estilos para tarjetas de estadísticas
+.statistics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+  .stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 16px;
+
+    .mat-icon {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+      color: white;
+    }
+  }
+
+  .stat-details {
+    h3 {
+      font-size: 28px;
+      font-weight: 600;
+      margin: 0 0 5px 0;
+      line-height: 1;
+    }
+
+    p {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+
+  &.urgent {
+    .stat-icon {
+      background-color: #f44336;
+    }
+    h3 {
+      color: #d32f2f;
+    }
+  }
+
+  &.high {
+    .stat-icon {
+      background-color: #ff9800;
+    }
+    h3 {
+      color: #ef6c00;
+    }
+  }
+
+  &.total {
+    .stat-icon {
+      background-color: #2196f3;
+    }
+    h3 {
+      color: #1976d2;
+    }
+  }
+}
+
+// Estilos para la tabla de aprobaciones
+.approval-table-container {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+// Estilo para filas
+.request-row {
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  &.expanded {
+    background-color: #f5f5f5;
+  }
+}
+
+// Estilos para la celda expandida
+.expanded-cell {
+  padding: 0 !important;
+}
+
+.expanded-detail {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// Estilos para indicadores
+.priority-indicator {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.priority-low {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.priority-medium {
+  background-color: #FFF8E1;
+  color: #F57F17;
+}
+
+.priority-high {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.priority-urgent {
+  background-color: #7F1719;
+  color: white;
+}
+
+// Estilo para tipo de solicitud
+.request-type-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+// Estilo para la descripción
+.request-description {
+  white-space: pre-line;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+// Estilo para el badge de fecha límite
+.due-date-badge {
+  display: inline-flex;
+  align-items: center;
+  color: #f44336;
+  margin-left: 8px;
+
+  .mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Información del creador
+.creator-info {
+  display: flex;
+  flex-direction: column;
+
+  small {
+    font-size: 12px;
+  }
+}
+
+// Tarjeta de información
+.info-card {
+  height: 100%;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 10px;
+
+  .info-label {
+    font-weight: 500;
+    min-width: 120px;
+    color: #666;
+  }
+}
+
+.urgent-text {
+  color: #f44336;
+  font-weight: 500;
+}
+
+// Botones de acción
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  button {
+    margin-bottom: 8px;
+  }
+}
+
+// Estado vacío
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #9e9e9e;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 8px 0;
+    color: #555;
+  }
+
+  p {
+    color: #777;
+    margin: 0;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
+  }
+}

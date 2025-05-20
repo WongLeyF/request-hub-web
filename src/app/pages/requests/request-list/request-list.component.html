@@ -1,0 +1,143 @@
+<div class="container-fluid p-4 ">
+  <!-- title -->
+   <div class="section-header">
+     <h1 class="mb-0">Lista de Solicitudes</h1>
+     <p class="text-muted">Aquí puedes ver y gestionar todas tus solicitudes</p>
+   </div>
+
+
+  <div class="row mb-4">
+    <div class="col-12">
+      <mat-card >
+        <mat-card-content class="pb-0">
+          <div class="row flex align-items-center justify-content-center">
+            <!-- Buscador -->
+            <div class="col-12 col-md-5 mb-3 my-md-auto">
+              <mat-form-field appearance="outline" class="w-100 my-auto">
+                <mat-label>Buscar solicitudes</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Buscar por nombre o ID" #input>
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Filtros de estado -->
+            <div class="col-12 col-md-5 mb-3 my-md-auto">
+              <mat-button-toggle-group [(ngModel)]="selectedStatus" (change)="filterByStatus()"
+                aria-label="Filtrar por estado">
+                <mat-button-toggle value="all">Todas</mat-button-toggle>
+                <mat-button-toggle value="pending">Pendiente</mat-button-toggle>
+                <mat-button-toggle value="approved">Aprobada</mat-button-toggle>
+                <mat-button-toggle value="rejected">Rechazada</mat-button-toggle>
+                <mat-button-toggle value="returned">Devuelta</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+
+            <!-- Botón crear nueva solicitud -->
+            <div class="col-12 col-md-2 text-end my-md-auto">
+              <button mat-raised-button color="primary" [routerLink]="['/requests/new']">
+                <mat-icon>add</mat-icon> Nueva solicitud
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="mat-elevation-z2 bg-white rounded">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let request"> {{request.id}} </td>
+          </ng-container>
+
+          <!-- Nombre Column -->
+          <ng-container matColumnDef="subject">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Asunto </th>
+            <td mat-cell *matCellDef="let request"> {{request.subject}} </td>
+          </ng-container>
+
+          <!-- Tipo Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+            <td mat-cell *matCellDef="let request">
+              <span class="request-type">{{getRequestTypeName(request.type)}}</span>
+            </td>
+          </ng-container>
+
+          <!-- Estado Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+            <td mat-cell *matCellDef="let request">
+              <span class="status-badge" [ngClass]="getStatusClass(request.status)">
+                {{getStatusLabel(request.status)}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Fecha Column -->
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de creación </th>
+            <td mat-cell *matCellDef="let request"> {{request.createdAt | date:'dd/MM/yyyy HH:mm'}} </td>
+          </ng-container>
+
+          <!-- Prioridad Column -->
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Prioridad </th>
+            <td mat-cell *matCellDef="let request">
+              <span class="priority-indicator" [ngClass]="getPriorityClass(request.priority)">
+                {{getPriorityLabel(request.priority)}}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Acciones Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+            <td mat-cell *matCellDef="let request" class="text-center" (click)="$event.stopPropagation()">
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Acciones">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="viewRequestDetails(request, $event)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>Ver detalles</span>
+                </button>
+                <button mat-menu-item *ngIf="request.status === 'pending'" (click)="editRequest(request, $event)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Editar</span>
+                </button>
+                <button mat-menu-item *ngIf="request.status === 'pending'" (click)="cancelRequest(request, $event)">
+                  <mat-icon>cancel</mat-icon>
+                  <span>Cancelar</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+              (click)="viewRequestDetails(row, $event)"
+              class="request-row"></tr>
+
+          <!-- Row shown when there is no matching data -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center py-5" colspan="7">
+              <div class="empty-state">
+                <mat-icon class="empty-icon">search_off</mat-icon>
+                <p>No se encontraron solicitudes {{ input.value ? 'que coincidan con "' + input.value + '"' : '' }}</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons
+          aria-label="Seleccionar página de solicitudes"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

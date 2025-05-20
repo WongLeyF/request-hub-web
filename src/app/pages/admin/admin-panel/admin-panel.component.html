@@ -1,0 +1,21 @@
+<div class="admin-panel-container">
+  <h1 class="admin-panel-title">Panel de Administración</h1>
+
+  <mat-tab-group class="admin-tabs" (selectedTabChange)="onTabChanged($event)" animationDuration="300ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">people</mat-icon>
+        Gestión de Usuarios
+      </ng-template>
+      <app-user-management></app-user-management>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">category</mat-icon>
+        Tipos de Solicitud
+      </ng-template>
+      <app-request-type-management></app-request-type-management>
+    </mat-tab>
+  </mat-tab-group>
+</div>

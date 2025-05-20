@@ -1,0 +1,123 @@
+// Estilos para la tabla
+.mat-mdc-table {
+  width: 100%;
+}
+
+// Estilos para las filas
+.request-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+// Estilos para los badges de estado
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #FF9800;
+}
+
+.status-approved {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.status-rejected {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+}
+
+.status-returned {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196F3;
+}
+
+.status-canceled {
+  background-color: rgba(158, 158, 158, 0.1);
+  color: #9E9E9E;
+}
+
+// Estilos para los indicadores de prioridad
+.priority-indicator {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.priority-low {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.priority-medium {
+  background-color: #FFF8E1;
+  color: #F57F17;
+}
+
+.priority-high {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.priority-urgent {
+  background-color: #7F1719;
+  color: white;
+}
+
+// Estilos para el estado vacío
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    color: #9E9E9E;
+  }
+
+  p {
+    color: #757575;
+    font-size: 16px;
+  }
+}
+
+// Estilos para los grupos de botones de filtro
+mat-button-toggle-group {
+  border-radius: 8px;
+  overflow-x: auto;
+  display: flex;
+
+  mat-button-toggle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  mat-button-toggle-group {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+
+    mat-button-toggle {
+      flex: 0 0 auto;
+    }
+  }
+}

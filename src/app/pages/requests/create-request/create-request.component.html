@@ -1,0 +1,90 @@
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+            <h3 class="mb-0">Nueva Solicitud</h3>
+
+        <div class="pt-4">
+          <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="request-form">
+            <!-- Tipo de solicitud -->
+            <div class="form-field">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Tipo de solicitud</mat-label>
+                <mat-select formControlName="type">
+                  <mat-option *ngFor="let type of requestTypes" [value]="type.value">
+                    {{type.viewValue}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="typeControl?.errors?.['required']">
+                  Por favor selecciona un tipo de solicitud
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Asunto -->
+            <div class="form-field">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Asunto</mat-label>
+                <input matInput formControlName="subject" placeholder="Ingresa un asunto breve y descriptivo">
+                <mat-hint align="end">{{subjectControl?.value?.length || 0}}/100</mat-hint>
+                <mat-error *ngIf="subjectControl?.errors?.['required']">
+                  El asunto es obligatorio
+                </mat-error>
+                <mat-error *ngIf="subjectControl?.errors?.['minlength']">
+                  El asunto debe tener al menos 5 caracteres
+                </mat-error>
+                <mat-error *ngIf="subjectControl?.errors?.['maxlength']">
+                  El asunto no puede exceder los 100 caracteres
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Descripción -->
+            <div class="form-field">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Descripción detallada</mat-label>
+                <textarea
+                  matInput
+                  formControlName="description"
+                  placeholder="Describe detalladamente tu solicitud"
+                  rows="5"
+                ></textarea>
+                <mat-hint align="end">Mínimo 20 caracteres</mat-hint>
+                <mat-error *ngIf="descriptionControl?.errors?.['required']">
+                  La descripción es obligatoria
+                </mat-error>
+                <mat-error *ngIf="descriptionControl?.errors?.['minlength']">
+                  Por favor proporciona una descripción más detallada (mínimo 20 caracteres)
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Fecha límite (opcional) -->
+            <div class="form-field">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Fecha límite (opcional)</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="dueDate" placeholder="DD/MM/YYYY">
+                <mat-hint>Para solicitudes urgentes</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="actions-container mt-4">
+              <button type="button" mat-stroked-button color="primary" (click)="onCancel()">
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                mat-raised-button
+                color="primary"
+                [disabled]="requestForm.invalid"
+              >
+                <mat-icon>send</mat-icon> Enviar solicitud
+              </button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+</div>

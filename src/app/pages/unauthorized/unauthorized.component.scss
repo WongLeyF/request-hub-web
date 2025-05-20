@@ -1,0 +1,32 @@
+.unauthorized-icon {
+  width: 100px;
+  height: 100px;
+  background-color: rgba(244, 67, 54, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.large-icon {
+  transform: scale(3);
+  color: #f44336;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: none;
+}
+
+// Estilos para los botones MaterialUI
+button {
+  &.mat-mdc-raised-button, &.mat-mdc-stroked-button {
+    font-weight: 500;
+  }
+}

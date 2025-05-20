@@ -1,0 +1,157 @@
+.content-wrapper {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+    margin: 0;
+  }
+}
+
+// Estilos para el formulario de filtros
+.report-form {
+  padding: 8px 0;
+}
+
+// Estilos para la sección del reporte
+.report-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+    color: #1a237e;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: #333;
+  }
+}
+
+// Contenedor de visualización
+.visualization-container {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+// Estilos para la tabla
+.table-container {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+// Estado vacío
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    color: #9e9e9e;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #616161;
+  }
+
+  p {
+    color: #757575;
+    margin: 0;
+  }
+}
+
+// Estado vacío inicial
+.empty-report-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .empty-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 24px;
+    color: #3f51b5;
+    opacity: 0.7;
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #424242;
+  }
+
+  p {
+    color: #757575;
+    margin: 0;
+  }
+}
+
+// Estilos para los badges de estado
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #FF9800;
+}
+
+.status-approved {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #4CAF50;
+}
+
+.status-rejected {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+}
+
+.status-canceled {
+  background-color: rgba(97, 97, 97, 0.1);
+  color: #616161;
+}

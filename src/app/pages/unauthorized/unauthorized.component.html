@@ -1,0 +1,32 @@
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card shadow col-md-6 col-lg-5 col-xl-4 text-center p-0">
+    <div class="card-header bg-danger text-white">
+      <h2 class="mb-0 py-2">
+        <mat-icon class="align-middle me-2">error_outline</mat-icon>
+        Acceso Denegado
+      </h2>
+    </div>
+
+    <div class="card-body p-5">
+      <div class="unauthorized-icon mb-4">
+        <mat-icon class="large-icon">lock</mat-icon>
+      </div>
+
+      <h3 class="mb-3">No tienes permisos para acceder a esta página</h3>
+      <p class="lead mb-4">
+        Tu cuenta de usuario no tiene los privilegios necesarios para acceder a este recurso.
+        Por favor, contacta al administrador si crees que esto es un error.
+      </p>
+
+      <div class="d-grid gap-3">
+        <button mat-raised-button color="primary" (click)="goToDashboard()" class="py-2">
+          <mat-icon>dashboard</mat-icon> Ir al Dashboard
+        </button>
+
+        <button mat-stroked-button color="warn" (click)="logout()" class="py-2">
+          <mat-icon>logout</mat-icon> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

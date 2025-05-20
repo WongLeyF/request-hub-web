@@ -1,0 +1,201 @@
+<div class="content-wrapper">
+  <div class="section-header">
+    <h1>Reportes</h1>
+    <p class="text-muted">Genera informes y analiza métricas sobre las solicitudes</p>
+  </div>
+
+  <!-- Configuración del reporte -->
+  <mat-card class="mb-4">
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="report-form">
+        <div class="row g-3">
+          <!-- Tipo de reporte -->
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Tipo de reporte</mat-label>
+              <mat-select formControlName="reportType">
+                <mat-option *ngFor="let type of reportTypes" [value]="type.value">
+                  {{ type.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Rango de tiempo -->
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Periodo</mat-label>
+              <mat-select formControlName="timeRange">
+                <mat-option *ngFor="let range of timeRanges" [value]="range.value">
+                  {{ range.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Departamento -->
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Areas</mat-label>
+              <mat-select formControlName="department">
+                <mat-option *ngFor="let department of departments" [value]="department">
+                  {{ department }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Rango de fechas personalizado -->
+        <div class="row g-3" *ngIf="showCustomDateRange">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Fecha inicial</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Fecha final</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-between mt-3">
+          <div>
+            <button mat-stroked-button color="accent" (click)="resetFilters()">
+              <mat-icon>refresh</mat-icon> Reiniciar filtros
+            </button>
+          </div>
+          <button mat-raised-button color="primary" (click)="generateReport()" [disabled]="isGeneratingReport">
+            <mat-icon>assessment</mat-icon>
+            {{ isGeneratingReport ? 'Generando...' : 'Generar reporte' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Resultados del reporte -->
+  <ng-container *ngIf="reportGenerated">
+    <div class="report-section">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>{{ getReportTitle() }}</h2>
+        <div>
+          <mat-form-field appearance="outline" class="me-2">
+            <mat-label>Formato</mat-label>
+            <mat-select formControlName="exportFormat" [formGroup]="filterForm">
+              <mat-option value="excel">Excel</mat-option>
+              <mat-option value="pdf">PDF</mat-option>
+              <mat-option value="csv">CSV</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-raised-button color="accent" (click)="exportReport()" [disabled]="!reportData">
+            <mat-icon>file_download</mat-icon> Exportar
+          </button>
+        </div>
+      </div>
+
+      <!-- Visualización según el tipo de reporte seleccionado -->
+      <div class="visualization-container">
+        <ng-container [ngSwitch]="selectedReport">
+          <app-requests-by-status *ngSwitchCase="'status'" [data]="reportData?.chartData"></app-requests-by-status>
+          <app-requests-by-type *ngSwitchCase="'type'" [data]="reportData?.chartData"></app-requests-by-type>
+          <app-approval-timeline *ngSwitchCase="'approval-time'" [data]="reportData?.chartData"></app-approval-timeline>
+          <app-report-chart *ngSwitchDefault [data]="reportData?.chartData" [chartType]="selectedReport"></app-report-chart>
+        </ng-container>
+      </div>
+
+      <!-- Tabla de datos detallados -->
+      <div class="mt-4">
+        <h3>Datos detallados</h3>
+        <div class="table-container mat-elevation-z2">
+          <table mat-table [dataSource]="dataSource" matSort class="w-100">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+              <td mat-cell *matCellDef="let item"> {{ item.id }} </td>
+            </ng-container>
+
+            <!-- Asunto Column -->
+            <ng-container matColumnDef="subject">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Asunto </th>
+              <td mat-cell *matCellDef="let item"> {{ item.subject }} </td>
+            </ng-container>
+
+            <!-- Tipo Column -->
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+              <td mat-cell *matCellDef="let item"> {{ item.type }} </td>
+            </ng-container>
+
+            <!-- Estado Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+              <td mat-cell *matCellDef="let item">
+                <span class="status-badge" [ngClass]="'status-' + item.status">
+                  {{ item.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Fecha Creación Column -->
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Creación </th>
+              <td mat-cell *matCellDef="let item"> {{ item.createdAt | date:'dd/MM/yyyy' }} </td>
+            </ng-container>
+
+            <!-- Fecha Finalización Column -->
+            <ng-container matColumnDef="completedAt">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Finalización </th>
+              <td mat-cell *matCellDef="let item"> {{ item.completedAt | date:'dd/MM/yyyy' }} </td>
+            </ng-container>
+
+            <!-- Tiempo Aprobación Column -->
+            <ng-container matColumnDef="approvalTime">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Tiempo Aprobación </th>
+              <td mat-cell *matCellDef="let item"> {{ item.approvalTime }} días </td>
+            </ng-container>
+
+            <!-- Departamento Column -->
+            <ng-container matColumnDef="department">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Departamento </th>
+              <td mat-cell *matCellDef="let item"> {{ item.department }} </td>
+            </ng-container>
+
+            <!-- Header Row -->
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+            <!-- Data Rows -->
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <!-- Empty State -->
+          <div *ngIf="dataSource.data.length === 0" class="empty-state">
+            <mat-icon class="empty-icon">analytics_off</mat-icon>
+            <h3>No hay datos disponibles</h3>
+            <p>Ajusta los filtros para generar un nuevo reporte.</p>
+          </div>
+
+          <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Estado vacío inicial -->
+  <div *ngIf="!reportGenerated" class="text-center py-5">
+    <div class="empty-report-state">
+      <mat-icon class="empty-icon">bar_chart</mat-icon>
+      <h3>Genera un reporte para visualizar datos</h3>
+      <p>Selecciona los parámetros y haz clic en "Generar reporte".</p>
+    </div>
+  </div>
+</div>

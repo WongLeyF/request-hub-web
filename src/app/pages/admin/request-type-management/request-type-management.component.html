@@ -1,0 +1,118 @@
+<div class="admin-content">
+  <div class="admin-header">
+    <div>
+      <h2 class="section-title">Tipos de Solicitud</h2>
+      <p class="section-subtitle">Configura los tipos de solicitud y sus flujos de aprobación</p>
+    </div>
+    <button mat-raised-button color="primary" class="create-button" (click)="createRequestType()">
+      <mat-icon>add</mat-icon>
+      Nuevo Tipo
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <mat-card class="filter-card">
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="filters-container">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Buscar tipo de solicitud</mat-label>
+          <input matInput formControlName="searchTerm" placeholder="Nombre o descripción">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <div class="filter-toggle">
+          <mat-slide-toggle formControlName="showInactive" color="primary">
+            Mostrar inactivos
+          </mat-slide-toggle>
+        </div>
+
+        <button mat-stroked-button color="accent" class="reset-button" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon> Reiniciar
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Tabla de Tipos de Solicitud -->
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort class="w-100">
+      <!-- Nombre Column -->
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+        <td mat-cell *matCellDef="let type">
+          {{ type.nombre }}
+        </td>
+      </ng-container>
+
+      <!-- Descripción Column -->
+      <ng-container matColumnDef="descripcion">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
+        <td mat-cell *matCellDef="let type">
+          <div class="description-text">{{ type.descripcion }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Etapas de Aprobación Column -->
+      <ng-container matColumnDef="etapas">
+        <th mat-header-cell *matHeaderCellDef> Etapas de Aprobación </th>
+        <td mat-cell *matCellDef="let type">
+          <div *ngIf="type.stages?.length > 0" class="stages-container">
+            <div *ngFor="let stage of type.stages; let i = index" class="stage-chip">
+              <span class="stage-indicator">{{ stage.etapa }}</span>
+              {{ getAreaName(stage.area_id) }}
+              <small>({{ stage.rol === 'admin' ? 'Admin' : 'Supervisor' }})</small>
+            </div>
+          </div>
+          <span *ngIf="!type.stages || type.stages.length === 0" class="text-muted">
+            Sin etapas definidas
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Estado Column -->
+      <ng-container matColumnDef="activo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+        <td mat-cell *matCellDef="let type">
+          <span class="status-badge" [ngClass]="type.activo ? 'active' : 'inactive'">
+            {{ type.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Acciones Column -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Acciones </th>
+        <td mat-cell *matCellDef="let type" class="actions-column">
+          <button mat-icon-button color="primary" matTooltip="Editar tipo" (click)="editRequestType(type)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button [color]="type.activo ? 'warn' : 'accent'"
+                  [matTooltip]="type.activo ? 'Desactivar' : 'Activar'"
+                  (click)="toggleRequestTypeStatus(type)">
+            <mat-icon>{{ type.activo ? 'block' : 'check_circle' }}</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" matTooltip="Eliminar tipo" (click)="deleteRequestType(type)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header Row -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+      <!-- Data Rows -->
+      <tr mat-row *matRowDef="let type; columns: displayedColumns;"
+          class="table-row"
+          [ngClass]="{'inactive-row': !type.activo}"></tr>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="dataSource.data.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">category_off</mat-icon>
+      <h3 class="empty-title">No se encontraron tipos de solicitud</h3>
+      <p class="empty-text">No hay tipos de solicitud que coincidan con los criterios de búsqueda o no hay tipos registrados.</p>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
